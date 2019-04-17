@@ -1,6 +1,6 @@
 # vertices_selection_sets
-> Blender addon to quickly create and use vertex sets for selection.
-<br>
+>Blender addon to quickly create and use vertex sets for selection.
+
 ## setup:
 console commands:
 ~~~
