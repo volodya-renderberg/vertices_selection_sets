@@ -21,29 +21,36 @@ class SELECTIONSETS_panel(bpy.types.Panel):
         layout = self.layout
         layout.label("Selection Sets")
         col = layout.column(align=1)
-        for item in self.list_of_sets:
-            col.label(item)
         col.operator("selection_sets.create", text = 'create')
-        col.operator("selection_sets.set", text = 'add').mode='ADD'
-        col.operator("selection_sets.set", text = 'replace').mode='REPLACE'
+        for item in sorted(self.list_of_sets):
+            row = col.row(align = True)
+            row.label(item)
+            row.operator("selection_sets.set", text = 'add').data='ADD.%s' % item
+            row.operator("selection_sets.set", text = 'replace').data='REPLACE.%s' % item
         
 class SELECTIONSETS_create(bpy.types.Operator):
     bl_idname = "selection_sets.create"
     bl_label = "create"
+    
+    name_of_set = bpy.props.StringProperty(name="Name:")
 
     def execute(self, context):
-        wr.create()
-        self.report({'INFO'}, 'create set')
+        wr.create(name=self.name_of_set)
+        self.report({'INFO'}, 'create set: %s' % self.name_of_set)
         return{'FINISHED'}
+    
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
     
 class SELECTIONSETS_set(bpy.types.Operator):
     bl_idname = "selection_sets.set"
     bl_label = "set"
-    mode = bpy.props.StringProperty()
+    data = bpy.props.StringProperty()
 
     def execute(self, context):
-        wr.set(mode=self.mode)
-        self.report({'INFO'}, self.mode)
+        mode, name = self.data.split('.')
+        wr.set(mode=mode, name=name)
+        self.report({'INFO'}, '%s - %s' % (name, mode))
         return{'FINISHED'}
 
 def register():
