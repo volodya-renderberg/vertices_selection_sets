@@ -1,69 +1,57 @@
+# -*- coding: utf-8 -*-
+
 import bpy
-import numpy as np
-import json
 
-TEXTS_NAME = 'selected_sets'
+from . import write_read_data as wr
 
-def get(name='set1'):
-    #get data
-    ob = bpy.context.object
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    count = len(ob.data.vertices)
-    sel = np.zeros(count, dtype=np.bool)
-    ob.data.vertices.foreach_get('select', sel)
-    #write data
-    print(sel)
-    write_set(name, sel)
+class G(object):
+    list_of_sets = []
     
-def set(name='set1', mode='REPLACE'):
-    #read data
-    sel = read_set(name)
-    print(sel)
-    #set data
-    ob = bpy.context.object
-    if mode=='ADD':
-        bpy.ops.object.mode_set(mode = 'OBJECT')
-        ob.data.vertices.foreach_set('select', sel)
-        bpy.ops.object.mode_set(mode = 'EDIT')
-    elif mode=='REPLACE':
-        bpy.ops.object.mode_set(mode = 'EDIT')
-        bpy.ops.mesh.select_all(action = 'DESELECT')
-        bpy.ops.object.mode_set(mode = 'OBJECT')
-        ob.data.vertices.foreach_set('select', sel)
-        bpy.ops.object.mode_set(mode = 'EDIT')
+class SELECTIONSETS_panel(bpy.types.Panel):
+    bl_idname = "face_rig.tools_panel"
+    bl_label = "Selection Sets"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Tools"
+    layout = 'Selection Sets'
+    bl_options = {'DEFAULT_CLOSED'}
 
-
-def write_set(name, data):
-    if not TEXTS_NAME in bpy.data.texts:
-        text = bpy.data.texts.new(TEXTS_NAME)
-        data_dict={}
-    else:
-        text = bpy.data.texts[TEXTS_NAME]
-        if text.as_string():
-            data_dict = json.loads(text.as_string())
-        else:
-            data_dict={}
+    def draw(self, context):
+        self.list_of_sets=wr.reload_list_of_sets()
+        layout = self.layout
+        layout.label("Selection Sets")
+        col = layout.column(align=1)
+        for item in self.list_of_sets:
+            col.label(item)
+        col.operator("selection_sets.create", text = 'create')
+        col.operator("selection_sets.set", text = 'add').mode='ADD'
+        col.operator("selection_sets.set", text = 'replace').mode='REPLACE'
         
-    data_dict[name]=data.tolist()
-    text.from_string(json.dumps(data_dict, sort_keys=True, indent=4))
+class SELECTIONSETS_create(bpy.types.Operator):
+    bl_idname = "selection_sets.create"
+    bl_label = "create"
 
-def read_set(name):
-    if not TEXTS_NAME in bpy.data.texts:
-        return(False)
-    text = bpy.data.texts[TEXTS_NAME]
-    if text.as_string():
-        data_dict = json.loads(text.as_string())
-        if not name in data_dict:
-            return(False)
-        else:
-            data_list = data_dict[name]
-            data=np.asarray(data_list)
-            return(data)
-    else:
-        return(False)
+    def execute(self, context):
+        wr.create()
+        self.report({'INFO'}, 'create set')
+        return{'FINISHED'}
+    
+class SELECTIONSETS_set(bpy.types.Operator):
+    bl_idname = "selection_sets.set"
+    bl_label = "set"
+    mode = bpy.props.StringProperty()
 
-#get()
-set()
+    def execute(self, context):
+        wr.set(mode=self.mode)
+        self.report({'INFO'}, self.mode)
+        return{'FINISHED'}
 
-#print(read_set('set1'))
+def register():
+    bpy.utils.register_class(SELECTIONSETS_panel)
+    bpy.utils.register_class(SELECTIONSETS_create)
+    bpy.utils.register_class(SELECTIONSETS_set)
+
+def unregister():
+    bpy.utils.unregister_class(SELECTIONSETS_panel)
+    bpy.utils.unregister_class(SELECTIONSETS_create)
+    bpy.utils.unregister_class(SELECTIONSETS_set)
