@@ -10,7 +10,7 @@ git clone https://github.com/volodya-renderberg/vertices_selection_sets.git
 ~~~
 ## use:
 after the add-on is activated, the menu will be located in **3dView/Tools/Selection Sets/**
-![image](https://user-images.githubusercontent.com/22092835/56342193-f9da6c80-61bf-11e9-99f8-7c3ad78148e6.png)
+![image](https://user-images.githubusercontent.com/22092835/56391480-72304480-6237-11e9-8591-dda4dd2fec4e.png)
 
 ##### create set
 Put the object into **Edit mode**, select the necessary vertices and click the **create** button, in the dialog box insert the **name** of the set being created.
@@ -18,6 +18,7 @@ Put the object into **Edit mode**, select the necessary vertices and click the *
 ##### buttons
 - **add** - will add the selection of this set to the current selection.
 - **replace** - only vertices of this set will be selected.
+- **sub** - subtract from current selection.
 - **del** - will remove this set
 
 >Data sets are in the text data-block: "vertices_selection_sets_data"
