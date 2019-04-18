@@ -4,7 +4,7 @@ import bpy
 import numpy as np
 import json
 
-TEXTS_NAME = 'selected_sets'
+TEXTS_NAME = 'vertices_selection_sets_data'
 
 def create(name='set1'):
     #get data
@@ -65,7 +65,6 @@ def read_set(name):
     else:
         return(False)
 
-#@persistent
 def reload_list_of_sets():
     if not TEXTS_NAME in bpy.data.texts:
         list_of_sets=[]
@@ -77,4 +76,14 @@ def reload_list_of_sets():
             list_of_sets=json.loads(text.as_string()).keys()
     return(list_of_sets)
 
-#bpy.app.handlers.save_post.append(reload_list_of_sets)
+def delete(name):
+    if not TEXTS_NAME in bpy.data.texts:
+        return
+    else:
+        text = bpy.data.texts[TEXTS_NAME]
+    if not text.as_string():
+        return
+    else:
+        data_dict = json.loads(text.as_string())
+        del data_dict[name]
+        text.from_string(json.dumps(data_dict, sort_keys=True, indent=4))

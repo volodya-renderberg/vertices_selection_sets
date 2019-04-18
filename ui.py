@@ -27,6 +27,7 @@ class SELECTIONSETS_panel(bpy.types.Panel):
             row.label(item)
             row.operator("selection_sets.set", text = 'add').data='ADD.%s' % item
             row.operator("selection_sets.set", text = 'replace').data='REPLACE.%s' % item
+            row.operator("selection_sets.delete", text = 'del').name=item
         
 class SELECTIONSETS_create(bpy.types.Operator):
     bl_idname = "selection_sets.create"
@@ -53,12 +54,24 @@ class SELECTIONSETS_set(bpy.types.Operator):
         self.report({'INFO'}, '%s - %s' % (name, mode))
         return{'FINISHED'}
 
+class SELECTIONSETS_delete(bpy.types.Operator):
+    bl_idname = "selection_sets.delete"
+    bl_label = "delete"
+    name = bpy.props.StringProperty()
+
+    def execute(self, context):
+        wr.delete(self.name)
+        self.report({'INFO'}, 'set removed : %s' % self.name)
+        return{'FINISHED'}
+
 def register():
     bpy.utils.register_class(SELECTIONSETS_panel)
     bpy.utils.register_class(SELECTIONSETS_create)
     bpy.utils.register_class(SELECTIONSETS_set)
+    bpy.utils.register_class(SELECTIONSETS_delete)
 
 def unregister():
     bpy.utils.unregister_class(SELECTIONSETS_panel)
     bpy.utils.unregister_class(SELECTIONSETS_create)
     bpy.utils.unregister_class(SELECTIONSETS_set)
+    bpy.utils.register_class(SELECTIONSETS_delete)
