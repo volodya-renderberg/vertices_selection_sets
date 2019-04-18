@@ -1,5 +1,6 @@
 # vertices_selection_sets
->Blender addon to quickly create and use vertex sets for selection.
+>Blender addon to quickly create and use vertex sets for selection.<br>
+Very often, when coloring weights, it is inconvenient to use to select vertices by **Vertex-Groups** due to their large number. Therefore, this small addon was written.
 
 ## setup:
 console commands:
