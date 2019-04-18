@@ -27,6 +27,7 @@ class SELECTIONSETS_panel(bpy.types.Panel):
             row.label(item)
             row.operator("selection_sets.set", text = 'add').data='ADD.%s' % item
             row.operator("selection_sets.set", text = 'replace').data='REPLACE.%s' % item
+            row.operator("selection_sets.set", text = 'sub').data='SUBTR.%s' % item
             row.operator("selection_sets.delete", text = 'del').name=item
         
 class SELECTIONSETS_create(bpy.types.Operator):
@@ -51,7 +52,7 @@ class SELECTIONSETS_set(bpy.types.Operator):
     def execute(self, context):
         mode = self.data.split('.')[0]
         name = self.data.replace('%s.' % mode, '')
-        wr.set(mode=mode, name=name)
+        wr.set_set(mode=mode, name=name)
         self.report({'INFO'}, '%s - %s' % (name, mode))
         return{'FINISHED'}
 

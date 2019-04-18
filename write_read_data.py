@@ -15,13 +15,13 @@ def create(name='set1'):
     sel = np.zeros(count, dtype=np.bool)
     ob.data.vertices.foreach_get('select', sel)
     #write data
-    print(sel)
+    #print(sel)
     write_set(name, sel)
     
-def set(name='set1', mode='REPLACE'):
+def set_set(name='set1', mode='REPLACE'):
     #read data
     sel = read_set(name)
-    print(sel)
+    #print(sel)
     #set data
     ob = bpy.context.object
     if mode=='ADD':
@@ -33,6 +33,19 @@ def set(name='set1', mode='REPLACE'):
         bpy.ops.mesh.select_all(action = 'DESELECT')
         bpy.ops.object.mode_set(mode = 'OBJECT')
         ob.data.vertices.foreach_set('select', sel)
+        bpy.ops.object.mode_set(mode = 'EDIT')
+    elif mode=='SUBTR':
+        #get current select
+        bpy.ops.object.mode_set(mode = 'OBJECT')
+        bpy.ops.object.mode_set(mode = 'EDIT')
+        count = len(ob.data.vertices)
+        current_select = np.zeros(count, dtype=np.bool)
+        ob.data.vertices.foreach_get('select', current_select)
+        required = current_select - sel
+        # set select
+        bpy.ops.mesh.select_all(action = 'DESELECT')
+        bpy.ops.object.mode_set(mode = 'OBJECT')
+        ob.data.vertices.foreach_set('select', required)
         bpy.ops.object.mode_set(mode = 'EDIT')
 
 
