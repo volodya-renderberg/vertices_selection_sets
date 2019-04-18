@@ -18,3 +18,5 @@ Put the object into **Edit mode**, select the necessary vertices and click the *
 - **add** - will add the selection of this set to the current selection.
 - **replace** - only vertices of this set will be selected.
 - **del** - will remove this set
+
+>Data sets are in the text data-block: "vertices_selection_sets_data"
