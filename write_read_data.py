@@ -6,6 +6,11 @@ import json
 
 TEXTS_NAME = 'vertices_selection_sets_data'
 
+modes = {
+    'EDIT_MESH':'EDIT',
+    'PAINT_WEIGHT':'WEIGHT_PAINT',
+    }
+
 def create(name='set1'):
     #get data
     ob = bpy.context.object
@@ -17,23 +22,29 @@ def create(name='set1'):
     #write data
     #print(sel)
     write_set(name, sel)
-    
-def set_set(name='set1', mode='REPLACE'):
+
+def set_set(mode='REPLACE', name='set1'):
     #read data
     sel = read_set(name)
     #print(sel)
     #set data
     ob = bpy.context.object
+    current_mode = bpy.context.mode
+    if current_mode in modes:
+        current_mode = modes[current_mode]
+    #
     if mode=='ADD':
         bpy.ops.object.mode_set(mode = 'OBJECT')
         ob.data.vertices.foreach_set('select', sel)
-        bpy.ops.object.mode_set(mode = 'EDIT')
+        #bpy.ops.object.mode_set(mode = 'EDIT')
+        bpy.ops.object.mode_set(mode = current_mode)
     elif mode=='REPLACE':
         bpy.ops.object.mode_set(mode = 'EDIT')
         bpy.ops.mesh.select_all(action = 'DESELECT')
         bpy.ops.object.mode_set(mode = 'OBJECT')
         ob.data.vertices.foreach_set('select', sel)
-        bpy.ops.object.mode_set(mode = 'EDIT')
+        #bpy.ops.object.mode_set(mode = 'EDIT')
+        bpy.ops.object.mode_set(mode = current_mode)
     elif mode=='SUBTR':
         #get current select
         bpy.ops.object.mode_set(mode = 'OBJECT')
@@ -46,7 +57,8 @@ def set_set(name='set1', mode='REPLACE'):
         bpy.ops.mesh.select_all(action = 'DESELECT')
         bpy.ops.object.mode_set(mode = 'OBJECT')
         ob.data.vertices.foreach_set('select', required)
-        bpy.ops.object.mode_set(mode = 'EDIT')
+        #bpy.ops.object.mode_set(mode = 'EDIT')
+        bpy.ops.object.mode_set(mode = current_mode)
 
 
 def write_set(name, data):

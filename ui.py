@@ -50,10 +50,10 @@ class SELECTIONSETS_set(bpy.types.Operator):
     data = bpy.props.StringProperty()
 
     def execute(self, context):
-        mode = self.data.split('.')[0]
-        name = self.data.replace('%s.' % mode, '')
-        wr.set_set(mode=mode, name=name)
-        self.report({'INFO'}, '%s - %s' % (name, mode))
+        tmode = self.data.split('.')[0]
+        name = self.data.replace('%s.' % tmode, '')
+        wr.set_set(mode=tmode, name=name)
+        self.report({'INFO'}, '%s - %s' % (name, tmode))
         return{'FINISHED'}
 
 class SELECTIONSETS_delete(bpy.types.Operator):
